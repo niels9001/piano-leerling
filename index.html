@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>🎹 Piano Leerling</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Startscherm -->
+        <section id="home" class="screen active">
+            <div class="home-header">
+                <h1>🎹 Piano Leerling</h1>
+                <p class="subtitle">Leer keyboard spelen!</p>
+            </div>
+            <div class="progress-overview" id="progress-overview"></div>
+            <div class="home-buttons">
+                <button class="big-btn btn-notes" onclick="app.showScreen('noten')">
+                    <span class="btn-icon">🎵</span>
+                    <span class="btn-label">Noten Leren</span>
+                </button>
+                <button class="big-btn btn-songs" onclick="app.showScreen('liedjes')">
+                    <span class="btn-icon">🎶</span>
+                    <span class="btn-label">Liedjes Spelen</span>
+                </button>
+                <button class="big-btn btn-free" onclick="app.showScreen('vrij')">
+                    <span class="btn-icon">🎹</span>
+                    <span class="btn-label">Vrij Spelen</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Noten Leren -->
+        <section id="noten" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="app.showScreen('home')">← Terug</button>
+                <h2>🎵 Noten Leren</h2>
+            </div>
+            <div id="noten-content">
+                <!-- Niveau keuze -->
+                <div id="niveau-keuze" class="niveau-grid">
+                    <button class="niveau-btn" onclick="notenLezen.startNiveau(1)">
+                        <span class="niveau-nummer">1</span>
+                        <span class="niveau-titel">Witte Toetsen</span>
+                        <span class="niveau-desc">Leer C, D, E, F, G, A, B</span>
+                        <div class="niveau-sterren" id="sterren-1"></div>
+                    </button>
+                    <button class="niveau-btn" onclick="notenLezen.startNiveau(2)">
+                        <span class="niveau-nummer">2</span>
+                        <span class="niveau-titel">Noten Lezen</span>
+                        <span class="niveau-desc">Herken noten op de balk</span>
+                        <div class="niveau-sterren" id="sterren-2"></div>
+                    </button>
+                    <button class="niveau-btn" onclick="notenLezen.startNiveau(3)">
+                        <span class="niveau-nummer">3</span>
+                        <span class="niveau-titel">Snelheid</span>
+                        <span class="niveau-desc">Combinaties & tempo</span>
+                        <div class="niveau-sterren" id="sterren-3"></div>
+                    </button>
+                    <button class="niveau-btn" onclick="notenLezen.startNiveau(4)">
+                        <span class="niveau-nummer">4</span>
+                        <span class="niveau-titel">Kruisen & Mollen</span>
+                        <span class="niveau-desc">Zwarte toetsen leren</span>
+                        <div class="niveau-sterren" id="sterren-4"></div>
+                    </button>
+                </div>
+                <!-- Les content -->
+                <div id="les-content" class="hidden">
+                    <div class="les-header">
+                        <button class="back-btn" onclick="notenLezen.stopLes()">← Niveaus</button>
+                        <div class="les-info">
+                            <span id="les-titel"></span>
+                            <span id="les-score" class="score-badge">0 punten</span>
+                        </div>
+                        <span id="les-voortgang"></span>
+                    </div>
+                    <div id="notenbalk-container"></div>
+                    <div id="les-vraag" class="les-vraag"></div>
+                    <div id="les-feedback" class="les-feedback"></div>
+                </div>
+            </div>
+            <div id="piano-noten" class="piano-wrapper"></div>
+        </section>
+
+        <!-- Liedjes Spelen -->
+        <section id="liedjes" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="app.showScreen('home')">← Terug</button>
+                <h2>🎶 Liedjes Spelen</h2>
+            </div>
+            <div id="liedjes-content">
+                <!-- Liedjeskeuze -->
+                <div id="liedjes-lijst" class="liedjes-grid"></div>
+                <!-- Liedje speler -->
+                <div id="liedje-speler" class="hidden">
+                    <div class="liedje-header">
+                        <button class="back-btn" onclick="liedjesSpeler.stopLiedje()">← Liedjes</button>
+                        <span id="liedje-titel" class="liedje-titel"></span>
+                        <div class="liedje-controls">
+                            <button class="control-btn" id="btn-luister" onclick="liedjesSpeler.luisterModus()">👂 Luisteren</button>
+                            <button class="control-btn active" id="btn-stap" onclick="liedjesSpeler.stapModus()">👆 Stap voor stap</button>
+                        </div>
+                    </div>
+                    <div id="liedje-notenbalk"></div>
+                    <div id="liedje-instructie" class="liedje-instructie"></div>
+                </div>
+            </div>
+            <div id="piano-liedjes" class="piano-wrapper"></div>
+        </section>
+
+        <!-- Vrij Spelen -->
+        <section id="vrij" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="app.showScreen('home')">← Terug</button>
+                <h2>🎹 Vrij Spelen</h2>
+            </div>
+            <div class="vrij-info">
+                <p>Speel wat je wilt! Tik op de toetsen om geluid te maken.</p>
+            </div>
+            <div id="piano-vrij" class="piano-wrapper vrij-piano"></div>
+        </section>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.6/build/cjs/vexflow.js"></script>
+
+    <!-- App modules -->
+    <script src="js/piano.js"></script>
+    <script src="js/voortgang.js"></script>
+    <script src="js/notenlezen.js"></script>
+    <script src="js/liedjes.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
